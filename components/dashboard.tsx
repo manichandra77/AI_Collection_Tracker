@@ -4,16 +4,21 @@ import { useState } from 'react'
 import { CollectionItem, ChatMessage, mockCollectionItems, mockChatMessages } from '@/lib/mock-data'
 import { CollectionGrid } from '@/components/collection-grid'
 import { ChatInterface } from '@/components/chat-interface'
-import { Sparkles, ArrowLeft } from 'lucide-react'
+import { AnalyticsView } from '@/components/analytics-view'
+import { Sparkles, ArrowLeft, LayoutGrid, BarChart3 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 interface DashboardProps {
   onBack: () => void
 }
 
+type TabType = 'collection' | 'analytics'
+
 export function Dashboard({ onBack }: DashboardProps) {
   const [items, setItems] = useState<CollectionItem[]>(mockCollectionItems)
   const [messages, setMessages] = useState<ChatMessage[]>(mockChatMessages)
+  const [activeTab, setActiveTab] = useState<TabType>('collection')
 
   return (
     <div className="min-h-screen bg-background">
@@ -37,11 +42,35 @@ export function Dashboard({ onBack }: DashboardProps) {
               <span className="text-lg font-semibold text-foreground">CollectAI</span>
             </div>
           </div>
-          <nav className="hidden md:flex items-center gap-6">
-            <a href="#" className="text-sm font-medium text-foreground">Dashboard</a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Analytics</a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Settings</a>
+          
+          {/* Tab Navigation */}
+          <nav className="flex items-center gap-1 bg-secondary/50 p-1 rounded-lg">
+            <button
+              onClick={() => setActiveTab('collection')}
+              className={cn(
+                "flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-all",
+                activeTab === 'collection'
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <LayoutGrid className="h-4 w-4" />
+              <span className="hidden sm:inline">Collection</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('analytics')}
+              className={cn(
+                "flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-all",
+                activeTab === 'analytics'
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <BarChart3 className="h-4 w-4" />
+              <span className="hidden sm:inline">Analytics</span>
+            </button>
           </nav>
+
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-sm font-medium text-foreground">
             J
           </div>
@@ -51,9 +80,13 @@ export function Dashboard({ onBack }: DashboardProps) {
       {/* Main Content */}
       <main className="mx-auto max-w-[1800px] p-4 lg:p-6">
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* Left: Collection Grid */}
+          {/* Left: Collection Grid or Analytics */}
           <div className="flex-1 min-w-0">
-            <CollectionGrid items={items} setItems={setItems} />
+            {activeTab === 'collection' ? (
+              <CollectionGrid items={items} setItems={setItems} />
+            ) : (
+              <AnalyticsView items={items} />
+            )}
           </div>
 
           {/* Right: Sticky Chat */}
