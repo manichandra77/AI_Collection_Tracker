@@ -1,15 +1,19 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
-import { ChatMessage, mockChatMessages } from '@/lib/mock-data'
+import { useState, useRef, useEffect, Dispatch, SetStateAction } from 'react'
+import { ChatMessage } from '@/lib/mock-data'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Send, Bot, User, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-export function ChatInterface() {
-  const [messages, setMessages] = useState<ChatMessage[]>(mockChatMessages)
+interface ChatInterfaceProps {
+  messages: ChatMessage[]
+  setMessages: Dispatch<SetStateAction<ChatMessage[]>>
+}
+
+export function ChatInterface({ messages, setMessages }: ChatInterfaceProps) {
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)

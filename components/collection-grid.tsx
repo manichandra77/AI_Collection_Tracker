@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { CollectionItem, mockCollectionItems } from '@/lib/mock-data'
+import { useState, Dispatch, SetStateAction } from 'react'
+import { CollectionItem } from '@/lib/mock-data'
 import { CollectionCard } from '@/components/collection-card'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -9,11 +9,19 @@ import { Search, Package } from 'lucide-react'
 
 const categories = ['All', 'Watches', 'Die-Cast', 'Collectibles']
 
-export function CollectionGrid() {
+interface CollectionGridProps {
+  items: CollectionItem[]
+  setItems: Dispatch<SetStateAction<CollectionItem[]>>
+}
+
+export function CollectionGrid({ items, setItems }: CollectionGridProps) {
   const [search, setSearch] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
 
-  const filteredItems = mockCollectionItems.filter((item) => {
+  // setItems is available for future dynamic updates
+  void setItems
+
+  const filteredItems = items.filter((item) => {
     const matchesSearch =
       item.brand.toLowerCase().includes(search.toLowerCase()) ||
       item.model.toLowerCase().includes(search.toLowerCase()) ||
